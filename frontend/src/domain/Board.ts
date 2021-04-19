@@ -33,7 +33,9 @@ export const getBoard = (size: number): Board => {
     x: range(min, max + 1),
     y: range(min, max + 1),
     z: range(min, max + 1),
-  }).map(pos => ({ pos, token: null }));
+  }).filter(pos => (
+    pos.x + pos.y + pos.z === 0
+  )).map(pos => ({ pos, token: null }));
 }
 
 export const getToken = (board: Board) => (vector: Vector): Token | null => {
@@ -43,3 +45,5 @@ export const getToken = (board: Board) => (vector: Vector): Token | null => {
     && tile.pos.z === vector.z
   ))?.token ?? null;
 }
+
+console.log(getBoard(3));
