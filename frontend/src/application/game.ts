@@ -5,10 +5,12 @@ import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { asyncTap } from '../rxjs-utils';
 import { Game } from '../domain/Game';
 import { User } from '../domain/User';
+import { getBoard } from '../domain/Board';
 
 const store = {
   state: new BehaviorSubject<Game>({
     players: [],
+    board: getBoard(3),
   }),
 };
 
