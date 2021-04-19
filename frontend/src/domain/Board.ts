@@ -26,13 +26,13 @@ export interface Token extends BaseToken {
 export type Board = Tile[];
 
 export const getBoard = (size: number): Board => {
-  const min = -1 * Math.floor(size / 2);
-  const max = Math.ceil(size / 2);
+  const min = -1 * (size - 1);
+  const max = size - 1;
 
   return combinate({
-    x: range(min, max),
-    y: range(min, max),
-    z: range(min, max),
+    x: range(min, max + 1),
+    y: range(min, max + 1),
+    z: range(min, max + 1),
   }).map(pos => ({ pos, token: null }));
 }
 
