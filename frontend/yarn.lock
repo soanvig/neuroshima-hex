@@ -401,6 +401,11 @@
   dependencies:
     "@pixi/core" "6.0.2"
 
+"@pixi/filter-outline@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@pixi/filter-outline/-/filter-outline-4.0.0.tgz#79083bbc27eff2245ef45efb2f45ef210e6ac076"
+  integrity sha512-kicGEHxjIyOXkt27WRZsGhMBJRSGpIFndNhgI/sAmLRD8Zh9Vt/REG9aY8NKoZ9tqRxDUEvzVHOgxNzKQ3ZWtg==
+
 "@pixi/graphics@6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@pixi/graphics/-/graphics-6.0.2.tgz#c8f4258b6e6fcfc41548d4046f243a7cca99eb85"

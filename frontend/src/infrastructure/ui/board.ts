@@ -2,7 +2,10 @@ import * as PIXI from 'pixi.js';
 import * as Honeycomb from 'honeycomb-grid';
 import { Board, getToken } from '../../domain/Board';
 import { game } from '../../application/game';
+import { sample } from 'lodash';
+import { OutlineFilter } from '@pixi/filter-outline';
 
+const outlineFilterBlue = new OutlineFilter(4, 0x99ff99);
 
 interface Rendered {
   render(board: Board): void;
@@ -25,7 +28,7 @@ class PixiRendarer implements Rendered {
   }
 
   private initGrid() {
-    const Hex = Honeycomb.extendHex({ size: 63, orientation: 'flat' })
+    const Hex = Honeycomb.extendHex({ size: 65, orientation: 'flat' })
     const Grid = Honeycomb.defineGrid(Hex);
 
     return Grid.hexagon({
@@ -36,7 +39,7 @@ class PixiRendarer implements Rendered {
   private initPixi() {
     const app = new PIXI.Application({
       transparent: true,
-      // antialias: true,
+      antialias: true,
       width: 800,
       height: 600,
       backgroundColor: 0x1099bb,
@@ -77,17 +80,18 @@ class PixiRendarer implements Rendered {
 
       hexSprite.x = hexOrigin.x + hex.center().x;
       hexSprite.y = hexOrigin.y + hex.center().y;
+      hexSprite.rotation = sample([0, 120, 60, 180, 240, 300])! * Math.PI / 180;
 
       hexSprite.addListener('click', e => {
         console.log(hex);
       })
 
       hexSprite.addListener('mouseover', e => {
-        hexSprite.alpha = 0.5;
+        hexSprite.filters = [outlineFilterBlue];
       })
 
       hexSprite.addListener('mouseout', e => {
-        hexSprite.alpha = 1;
+        hexSprite.filters = [];
       })
 
       this.boardContainer.addChild(hexSprite);
