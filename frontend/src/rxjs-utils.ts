@@ -4,7 +4,7 @@
 import { mapTo, switchMap } from 'rxjs/operators';
 import { from } from 'rxjs';
 
-export const asyncTap = (cbReturningPromise: any): any => switchMap(v => {
+export const asyncTap = <T>(cbReturningPromise: (arg: T) => Promise<unknown>) => switchMap((v: T) => {
   return from(cbReturningPromise(v)).pipe(
     mapTo(v),
   );

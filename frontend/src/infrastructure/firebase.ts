@@ -3,9 +3,10 @@ import 'firebase/auth';
 import 'firebase/firestore';
 
 import * as firebaseui from 'firebaseui';
+import { User } from '../domain/User';
 
-const onLoginListeners: any[] = [];
-const onLogoutListeners: any[] = [];
+const onLoginListeners: ((u: User) => void)[] = [];
+const onLogoutListeners: VoidFunction[] = [];
 
 firebase.initializeApp({
   apiKey: 'AIzaSyBrpmUa1y5cQxSv0hvt5fJLVwf1OteyJ2g',
@@ -36,8 +37,7 @@ const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
-    // https://firebase.google.com/docs/reference/js/firebase.User
-    onLoginListeners.forEach(cb => cb(user));
+    onLoginListeners.forEach(cb => cb(user as any)); // @TODO  type is incompatible because email may be null but whatever
   } else {
     onLogoutListeners.forEach(cb => cb());
   }
@@ -49,7 +49,7 @@ window.addEventListener('load', () => {
 
 const firebaseDb = firebase.firestore();
 
-export const onLogin = (cb: any) => onLoginListeners.push(cb);
-export const onLogout = (cb: any) => onLogoutListeners.push(cb);
+export const onLogin = (cb: (u: User) => void) => onLoginListeners.push(cb);
+export const onLogout = (cb: VoidFunction) => onLogoutListeners.push(cb);
 export const db = firebaseDb;
 export const firestore = firebase.firestore;
