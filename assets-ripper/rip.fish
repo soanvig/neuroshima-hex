@@ -1,7 +1,7 @@
 #!/usr/bin/fish
 
 set fileDir "assets/gfx"
-set factions borgo dancer deathbreath doomsdaymachine hegemonia irongang mephisto mini missisipi moloch neodzungla nowyjork posterunek sandrunners sharrash smart stalowapolicja troglodyci uranopolis vegas
+set factions borgo dancer deathbreath doomsdaymachine hegemonia irongang mephisto missisipi moloch neodzungla nowyjork posterunek sandrunners sharrash smart stalowapolicja troglodyci uranopolis vegas
 
 for faction in $factions
 	wget -nH -r -l1 --no-parent -N -P assets --show-progress --no-verbose https://neuroshimahex.pl/gfx/$faction/
@@ -9,7 +9,10 @@ end
 
 find assets -name "*.html*" -exec rm -r "{}" \;
 
-#  Create mask
+# Manual fixes
+convert ./assets/gfx/irongang/irongang-hak.jpg ./assets/gfx/irongang/irongang-hak.png
+
+# Create mask
 convert -size 150x140 xc:none -fill black -draw "polygon 45,15 105,15 137,70 105,123 45,123 12,70" mask.png
 
 for file in (find assets -name "*.png" -exec echo "{}" \;)
