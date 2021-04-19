@@ -6,11 +6,18 @@ import { asyncTap } from '../rxjs-utils';
 import { Game } from '../domain/Game';
 import { User } from '../domain/User';
 import { getBoard } from '../domain/Board';
+import { tokens } from '../domain/tokens';
 
 const store = {
   state: new BehaviorSubject<Game>({
     players: [],
-    board: getBoard(3),
+    board: getBoard(3).map(tile => ({
+      ...tile,
+      token: ({
+        ...tokens['base'],
+        direction: { x: 0, y: -1, z: 1 },
+      })
+    })),
   }),
 };
 

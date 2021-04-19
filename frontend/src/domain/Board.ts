@@ -12,8 +12,14 @@ interface Tile {
   token: Token | null;
 }
 
-interface Token {
+// Token scaffolding
+export interface BaseToken {
   id: string;
+  graphics: string;
+}
+
+// Ingame token
+export interface Token extends BaseToken {
   direction: Vector;
 }
 
