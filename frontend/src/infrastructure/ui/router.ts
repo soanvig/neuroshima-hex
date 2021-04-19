@@ -1,4 +1,4 @@
-import { auth } from '../../application/auth.js';
+import { auth } from '../../application/auth';
 
 export const router = {
   init() {

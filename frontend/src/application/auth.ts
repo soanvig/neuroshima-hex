@@ -1,13 +1,14 @@
-import { onLogin, onLogout } from '../infrastructure/firebase.js';
-import { filter, RxJS, skip } from '../rxjs.js';
+import { onLogin, onLogout } from '../infrastructure/firebase';
+import { BehaviorSubject } from 'rxjs';
+import { filter, skip } from 'rxjs/operators';
 
 const store = {
-  user: new RxJS.BehaviorSubject(null),
+  user: new BehaviorSubject(null),
 };
 
 export const auth = {
   init() {
-    onLogin(user => store.user.next(user));
+    onLogin((user: any) => store.user.next(user));
     onLogout(() => store.user.next(null));
   },
   logout$: store.user.pipe(

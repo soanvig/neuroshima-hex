@@ -1,18 +1,24 @@
-import { stateRepository } from '../infrastructure/stateRepository.js';
-import { auth } from './auth.js';
-import { asyncTap, map, RxJS, switchMap, takeUntil } from '../rxjs.js';
+import { stateRepository } from '../infrastructure/stateRepository';
+import { auth } from './auth';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { asyncTap } from '../rxjs-utils';
+
+interface GameState {
+  players: any[];
+}
 
 const store = {
-  state: new RxJS.BehaviorSubject({
+  state: new BehaviorSubject<GameState>({
     players: [],
   }),
 };
 
-const ensureGame = async ({ gameId }) => {
+const ensureGame = async ({ gameId }: any) => {
   await stateRepository.ensureGame(gameId);
 };
 
-const join = async ({ gameId, user }) => {
+const join = async ({ gameId, user }: any) => {
   await stateRepository.addPlayer(gameId, user.email);
 };
 
@@ -36,12 +42,12 @@ export const game = {
       asyncTap(ensureGame),
       asyncTap(join),
       switchMap(({ gameId }) => {
-        return RxJS.Observable.create(subscriber => {
-          stateRepository.onStateChange(gameId, state => subscriber.next(state));
+        return Observable.create((subscriber: any) => {
+          stateRepository.onStateChange(gameId, (state: any) => subscriber.next(state));
         });
       }),
       takeUntil(auth.logout$),
-    ).subscribe(store.state);
+    ).subscribe(store.state as any);
   },
   state: store.state.asObservable(),
 };

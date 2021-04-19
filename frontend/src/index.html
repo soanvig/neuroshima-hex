@@ -5,14 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-
-  <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
-  <script src="https://unpkg.com/@reactivex/rxjs@6.6.7/dist/global/rxjs.umd.js"></script>
   <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
-
   <style>
     .page {
       display: none;
@@ -24,15 +17,13 @@
   </style>
 </head>
 <body>
-  <div>HELP: Add ?gameId=XXXXXXXXX to URL. GameId will be used as room id so users can join to</div>
+<div>HELP: Add ?gameId=XXXXXXXXX to URL. GameId will be used as room id so users can join to</div>
 
-  <div class="page" id="login"></div>
-  <div class="page" id="game">
-    <h1>Game</h1>
+<div class="page" id="login"></div>
+<div class="page" id="game">
+  <h1>Game</h1>
 
-    <div id="game-state"></div>
-  </div>
-
-  <script type="module" src="./index.js"></script>
+  <div id="game-state"></div>
+</div>
 </body>
 </html>

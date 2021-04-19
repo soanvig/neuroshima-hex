@@ -1,8 +1,8 @@
-import { game } from '../../application/game.js';
-import { map } from '../../rxjs.js';
+import { game } from '../../application/game';
+import { map } from 'rxjs/operators';
 
 const html = {
-  state: document.getElementById('game-state'),
+  state: document.getElementById('game-state')!,
 };
 
 export const gamePage = {
