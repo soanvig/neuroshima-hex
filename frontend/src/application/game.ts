@@ -1,6 +1,7 @@
 import { stateRepository } from '../infrastructure/stateRepository';
 import { auth } from './auth';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { sample } from 'lodash';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { asyncTap } from '../rxjs-utils';
 import { Game } from '../domain/Game';
@@ -14,7 +15,7 @@ const store = {
     board: getBoard(3).map(tile => ({
       ...tile,
       token: ({
-        ...tokens['base'],
+        ...tokens[sample(['base', 'sieciarz'])!],
         direction: { x: 0, y: -1, z: 1 },
       })
     })),
