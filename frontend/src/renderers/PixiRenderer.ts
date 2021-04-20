@@ -3,8 +3,9 @@ import * as PIXI from 'pixi.js';
 import * as Honeycomb from 'honeycomb-grid';
 import { sample } from 'lodash';
 import { OutlineFilter } from '@pixi/filter-outline';
-import { Board, getToken, Vector } from '../domain/Board';
+import type { Board } from '../domain/Board';
 import { getTokenGraphics } from '../domain/tokens';
+import type { Vector } from '../domain/Vector';
 
 const outlineFilterBlue = new OutlineFilter(4, 0x99ff99);
 
@@ -52,11 +53,15 @@ export class PixiRenderer implements Renderer {
     this.grid.forEach(hex => {
       const cube = hex.cube();
 
-      const token = getToken(board)({
+      const token = board.getToken({
         x: cube.q,
         y: cube.r,
         z: cube.s,
-      })!;
+      });
+
+      if (!token) {
+        return;
+      }
 
       const hexOrigin = hex.toPoint();
       const hexSprite = PIXI.Sprite.from(getTokenGraphics(token.id));

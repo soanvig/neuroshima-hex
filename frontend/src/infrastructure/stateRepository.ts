@@ -1,12 +1,22 @@
+import { Board } from '../domain/Board';
 import { createGame, Game, getNewVersion, updateGameVersion } from '../domain/Game';
 import { db, firestore } from './firebase';
 
 export const stateRepository = {
-  onStateChange(gameId: string, cb: (game: Game) => void) {
+  onStateChange(gameId: string, cb: (game: Game | null) => void) {
     return db.collection('games')
       .doc(gameId)
       .onSnapshot((doc) => {
-        cb(doc.data() as any); // @TODO whatever
+        const data = doc.data();
+
+        if (data) {
+          cb({
+            ...data,
+            board: Board.fromJSON(data.board),
+          } as Game);
+        } else {
+          cb(null);
+        }
       });
   },
   async addPlayer(gameId: string, playerName: string) {
@@ -19,7 +29,12 @@ export const stateRepository = {
     const doc = await db.collection('games').doc(gameId).get();
 
     if (!doc.exists) {
-      await db.collection('games').doc(gameId).set(updateGameVersion(createGame()));
+      const game = updateGameVersion(createGame());
+
+      await db.collection('games').doc(gameId).set({
+        ...game,
+        board: game.board.toJSON(),
+      });
     }
   },
   async saveState(gameId: string, game: Game) {

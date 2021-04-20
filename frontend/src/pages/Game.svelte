@@ -8,10 +8,6 @@ import StateDebug from '../components/StateDebug.svelte';
     stateManager.send();
   }
 
-  function handleRandomizeBoardClick () {
-    game.randomizeBoard();
-  }
-
   function handleRandomizeTokenClick () {
     game.placeRandomToken();
   }
@@ -24,6 +20,5 @@ import StateDebug from '../components/StateDebug.svelte';
 <StateDebug />
 <Board />
 <button on:click={handleSendClick}>Send state</button>
-<button on:click={handleRandomizeBoardClick}>Randomize board</button>
-<button on:click={handleRandomizeTokenClick}>Randomize token</button>
-<button on:click={handleRandomizeDirectionClick}>Randomize direction</button>
+<button on:click={handleRandomizeTokenClick}>Place token</button>
+<button on:click={handleRandomizeDirectionClick}>Rotate random token</button>

@@ -1,5 +1,5 @@
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
-import { filter, mapTo, switchMap } from 'rxjs/operators';
+import { filter, map, mapTo, switchMap } from 'rxjs/operators';
 import { createGame, Game, updateGameVersion } from '../domain/Game';
 import { stateRepository } from '../infrastructure/stateRepository';
 
@@ -11,10 +11,11 @@ const store = {
 const sendStateSubject = new Subject<void>();
 
 const initRemoteStateUpdate = (gameId: string) => {
-  const sub = new Observable<Game>((subscriber) => {
-    stateRepository.onStateChange(gameId, (state: Game) => subscriber.next(state));
+  const sub = new Observable<Game | null>((subscriber) => {
+    stateRepository.onStateChange(gameId, (state: Game | null) => subscriber.next(state));
   }).pipe(
     filter(v => Boolean(v)), // this may be undefined in firebase on nit
+    map(v => v as Game), // only typing
   ).subscribe(store.remoteState);
 
   return () => sub.unsubscribe();

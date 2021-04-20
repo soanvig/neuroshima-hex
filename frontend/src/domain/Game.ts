@@ -1,6 +1,7 @@
 import { v1 } from 'uuid';
-import { Board, getBoard, getNeutralDirection, replaceToken, rotateToken, Vector } from './Board';
+import { Board } from './Board';
 import { sampleTokenId } from './tokens';
+import { getRandomDirection } from './Vector';
 
 export interface Game {
   version: string;
@@ -11,13 +12,7 @@ export interface Game {
 export const createGame = (): Game => ({
   version: '',
   players: [],
-  board: getBoard(3).map(tile => ({
-    ...tile,
-    token: ({
-      id: sampleTokenId(),
-      direction: getNeutralDirection(),
-    }),
-  })),
+  board: Board.empty(3),
 });
 
 export const getNewVersion = () => v1(); // timestamped uuid
@@ -27,23 +22,14 @@ export const updateGameVersion = (game: Game): Game => ({
   version: getNewVersion(),
 });
 
-export const randomizeBoard = (game: Game): Game => updateGameVersion({
-  ...game,
-  board: getBoard(3).map(tile => ({
-    ...tile,
-    token: ({
-      id: sampleTokenId(),
-      direction: { x: 0, y: -1, z: 1 },
-    }),
-  })),
-});
+export const placeRandomToken = (game: Game): Game => {
+  game.board.placeToken(game.board.getRandomTile().pos, sampleTokenId());
 
-export const placeToken = (game: Game) => (pos: Vector, tokenId: string): Game => ({
-  ...game,
-  board: replaceToken(game.board, pos, tokenId),
-});
+  return game;
+};
 
-export const randomTokenRotate = (game: Game) => (pos: Vector): Game => ({
-  ...game,
-  board: rotateToken(game.board, pos),
-});
+export const randomTokenRotate = (game: Game): Game => {
+  game.board.rotateToken(game.board.getRandomTile().pos, getRandomDirection());
+
+  return game;
+};

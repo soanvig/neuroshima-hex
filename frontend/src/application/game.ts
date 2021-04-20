@@ -2,12 +2,9 @@ import { stateRepository } from '../infrastructure/stateRepository';
 import { auth } from './auth';
 import { map } from 'rxjs/operators';
 import { asyncTap } from '../rxjs-utils';
-import { placeToken, randomizeBoard, randomTokenRotate } from '../domain/Game';
-import type { Vector } from '../domain/Board';
+import { randomTokenRotate, placeRandomToken } from '../domain/Game';
 import type { User } from '../domain/User';
 import { stateManager } from './stateManager';
-import { sample } from 'lodash';
-import { sampleTokenId } from '../domain/tokens';
 
 const getGameId = (): string => {
   const queryParams = new URLSearchParams(window.location.search);
@@ -47,18 +44,15 @@ export const game = {
 
     initSetup(gameId);
   },
-  randomizeBoard: () => {
-    stateManager.update(randomizeBoard(stateManager.getState()));
-  },
   placeRandomToken: () => {
     const state = stateManager.getState();
 
-    stateManager.update(placeToken(state)(sample(state.board)!.pos, sampleTokenId()));
+    stateManager.update(placeRandomToken(state));
   },
   rotateRandomToken: () => {
     const state = stateManager.getState();
 
-    stateManager.update(randomTokenRotate(state)(sample(state.board)!.pos));
+    stateManager.update(randomTokenRotate(state));
   },
   getGameId,
 };

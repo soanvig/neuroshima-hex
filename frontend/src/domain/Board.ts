@@ -1,12 +1,6 @@
-import combinate from 'combinate';
-import { range, sample } from 'lodash';
+import { sample } from 'lodash';
 import { sampleTokenId } from './tokens';
-
-export interface Vector {
-  x: number;
-  y: number;
-  z: number;
-}
+import { areVectorsEqual, getNeutralDirection, getRandomDirection, Vector, generatePossibleVectors } from './Vector';
 
 interface Tile {
   pos: Vector;
@@ -25,66 +19,76 @@ export interface Token {
   direction: Vector;
 }
 
-const generatePossibleVectors = (min: number, max: number) => combinate({
-  x: range(min, max + 1),
-  y: range(min, max + 1),
-  z: range(min, max + 1),
-}).filter(pos => (
-  pos.x + pos.y + pos.z === 0
-));
+type StringifiedBoard = { size: number, tiles: Tile[] };
 
-export const getNeutralDirection = () => ({ x: 0, y: -1, z: 1 });
-const getRandomDirection = () => sample(generatePossibleVectors(-1, 1).filter(pos => !areVectorsEqual(pos, { x: 0, y: 0, z: 0 })))!;
+export class Board {
+  private size: number;
+  private tiles: Tile[];
 
-export type Board = Tile[];
+  private constructor(ctor: { tiles: Tile[], size: number }) {
+    this.tiles = ctor.tiles;
+    this.size = ctor.size;
+  }
 
-const areVectorsEqual = (v1: Vector, v2: Vector): boolean => (
-  v1.x === v2.x
-    && v1.y === v2.y
-    && v1.z === v2.z
-);
+  public getRandomTile(): Tile {
+    return sample(this.tiles)!;
+  }
 
-export const getBoard = (size: number): Board => {
-  const min = -1 * (size - 1);
-  const max = size - 1;
+  public getToken(vector: Vector): Token | null {
+    return this.tiles.find(tile => areVectorsEqual(tile.pos, vector))?.token ?? null;
+  }
 
-  return generatePossibleVectors(min, max).map(pos => ({ pos, token: null }));
-};
+  public placeToken(pos: Vector, tokenId: string) {
+    const index = this.tiles.findIndex(tile => areVectorsEqual(tile.pos, pos));
+    const tile = this.tiles[index];
 
-export const getToken = (board: Board) => (vector: Vector): Token | null => {
-  return board.find(tile => areVectorsEqual(tile.pos, vector))?.token ?? null;
-};
-
-const mapBoard = (board: Board, filter: (v: Tile) => boolean, cb: (v: Tile) => Tile): Board => {
-  return board.map(tile => {
-    if (filter(tile)) {
-      return cb(tile);
-    } else {
-      return tile;
+    if (tile.token) {
+      throw new Error(`Cannot place token on existing token ${pos}`);
     }
-  });
-};
 
-export const replaceToken = (board: Board, pos: Vector, tokenId: string): Board => mapBoard(
-  board,
-  tile => areVectorsEqual(tile.pos, pos),
-  tile => ({
-    ...tile,
-    token: {
+    tile.token = {
       id: tokenId,
-      direction: tile.token ? tile.token.direction : getNeutralDirection(),
-    },
-  }),
-);
+      direction: getNeutralDirection(),
+    };
+  }
 
-export const rotateToken = (board: Board, pos: Vector): Board => mapBoard(
-  board,
-  tile => areVectorsEqual(tile.pos, pos),
-  tile => ({
-    ...tile,
-    token: {
-      id: tile.token ? tile.token.id : sampleTokenId(),
-      direction: getRandomDirection(),
-    },
-  }),
-);
+  public rotateToken(pos: Vector, direction: Vector) {
+    const index = this.tiles.findIndex(tile => areVectorsEqual(tile.pos, pos));
+    const tile = this.tiles[index];
+
+    if (!tile.token) {
+      throw new Error(`Cannot rotate not existing token ${pos}`);
+    }
+
+    tile.token.direction = direction;
+  }
+
+  public toJSON(): string {
+    return JSON.stringify({
+      tiles: this.tiles,
+      size: this.size,
+    } as StringifiedBoard);
+  }
+
+  public static fromJSON(json: string): Board {
+    const data: StringifiedBoard = JSON.parse(json);
+
+    return new Board({
+      tiles: data.tiles,
+      size: data.size,
+    });
+  }
+
+  public static empty(size: number): Board {
+    const min = -1 * (size - 1);
+    const max = size - 1;
+
+    return new Board({
+      size,
+      tiles: generatePossibleVectors(min, max).map(pos => ({
+        pos,
+        token: null,
+      })),
+    });
+  }
+}
