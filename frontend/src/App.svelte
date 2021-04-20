@@ -11,10 +11,22 @@ function onLogout() {
 let route = router.route$;
 </script>
 
-{#if $route === 'login'}
-  <Login />
-{:else if $route === 'game'}
-  <Game />
-{/if}
+<div class="main">
+  {#if $route === 'login'}
+    <Login />
+  {:else if $route === 'game'}
+    <Game />
+  {/if}
 
-<button on:click={onLogout}>Logout</button>
+  <button on:click={onLogout}>Logout</button>
+</div>
+
+<style>
+  .main {
+    width: 100vw;
+    height: 100vh;
+    background: url('~./bg.jpg') no-repeat;
+    background-size: cover;
+  }
+</style>
+

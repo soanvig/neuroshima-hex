@@ -1,11 +1,7 @@
 <script lang="ts">
-  import { map } from 'rxjs/operators';
   import { game } from '../application/game';
   import Board from '../components/Board.svelte';
-
-  let state = game.state$.pipe(
-    map(v => JSON.stringify(v, null, 2)),
-  );
+  import StateDebug from '../components/StateDebug.svelte';
 
   function handleSendClick() {
     game.sendState();
@@ -16,7 +12,7 @@
   }
 </script>
 
-<div>{$state}</div>
+<StateDebug />
 <Board />
 <button on:click={handleSendClick}>Send state</button>
 <button on:click={handleRandomizeClick}>Randomize board</button>

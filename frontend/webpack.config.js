@@ -20,11 +20,19 @@ module.exports = {
         use: {
           loader: 'svelte-loader',
           options: {
-            preprocess: require('svelte-preprocess')({
-            }),
+            emitCss: true,
+            preprocess: require('svelte-preprocess')({}),
           },
         },
       },
+      {
+        test: /\.css$/i,
+        use: [
+          'style-loader',
+          { loader: 'css-loader', options: { sourceMap: true } },
+        ],
+      },
+
       {
         test: /\.(png|jpg|gif)$/i,
         use: [
