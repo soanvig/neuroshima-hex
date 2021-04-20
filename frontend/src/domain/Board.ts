@@ -46,5 +46,3 @@ export const getToken = (board: Board) => (vector: Vector): Token | null => {
     && tile.pos.z === vector.z
   ))?.token ?? null;
 }
-
-console.log(getBoard(3));

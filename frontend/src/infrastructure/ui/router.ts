@@ -1,10 +1,41 @@
-import { auth } from '../../application/auth';
+import { BehaviorSubject } from 'rxjs';
+import { pairwise } from 'rxjs/operators';
+import { Component } from './Component';
+import { gamePage } from './game';
+import { loginPage } from './login';
+
+const routes: Record<string, Component> = {
+  'login': loginPage,
+  'game': gamePage,
+}
+
+const routeStore = new BehaviorSubject('');
+
+const renderComponent = ([prev, current]: [string, string]) => {
+  if (prev !== '' && routes[prev]) {
+    routes[prev].unmount();
+
+    const el: HTMLElement = document.querySelector(`#${prev}.page`)!;
+    el.style.display = 'none';
+  }
+
+  if (routes[current]) {
+    routes[current].mount();
+
+    const el: HTMLElement = document.querySelector(`#${current}.page`)!;
+    el.style.display = 'block';
+  }
+}
 
 export const router = {
   init() {
-    // window.location.hash = 'login';
+    routeStore.pipe(
+      pairwise(),
+    ).subscribe(renderComponent);
 
-    // auth.logout$.subscribe(() => window.location.hash = 'login');
-    auth.login$.subscribe(() => window.location.hash = 'game');
+    routeStore.next('login');
   },
+  goTo(route: string) {
+    routeStore.next(route);
+  }
 };

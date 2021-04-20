@@ -17,7 +17,6 @@ firebase.initializeApp({
   appId: '1:607303186346:web:3801965553235dfa7e1dd3',
 });
 
-
 const successUrl = new URL('http://localhost:8080/');
 successUrl.search = window.location.search;
 
@@ -35,21 +34,20 @@ const uiConfig = {
 
 const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    onLoginListeners.forEach(cb => cb(user as any)); // @TODO  type is incompatible because email may be null but whatever
-  } else {
-    onLogoutListeners.forEach(cb => cb());
-  }
-});
-
-window.addEventListener('load', () => {
-  ui.start('#login', uiConfig);
-});
-
 const firebaseDb = firebase.firestore();
 
 export const onLogin = (cb: (u: User) => void) => onLoginListeners.push(cb);
 export const onLogout = (cb: VoidFunction) => onLogoutListeners.push(cb);
 export const db = firebaseDb;
 export const firestore = firebase.firestore;
+export const firebaseInit = () => {
+  ui.start('#login', uiConfig);
+
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      onLoginListeners.forEach(cb => cb(user as any)); // @TODO  type is incompatible because email may be null but whatever
+    } else {
+      onLogoutListeners.forEach(cb => cb());
+    }
+  });
+}

@@ -12,7 +12,7 @@ interface Rendered {
   render(board: Board): void;
 }
 
-class PixiRendarer implements Rendered {
+class PixiRenderer implements Rendered {
   private grid: Honeycomb.Grid;
   private app: PIXI.Application;
   private boardContainer = new PIXI.Container();
@@ -29,7 +29,7 @@ class PixiRendarer implements Rendered {
   }
 
   private initGrid() {
-    const Hex = Honeycomb.extendHex({ size: 65, orientation: 'flat' })
+    const Hex = Honeycomb.extendHex({ size: 65, orientation: 'flat' });
     const Grid = Honeycomb.defineGrid(Hex);
 
     return Grid.hexagon({
@@ -85,31 +85,40 @@ class PixiRendarer implements Rendered {
 
       hexSprite.addListener('click', e => {
         console.log(hex);
-      })
+      });
 
       hexSprite.addListener('mouseover', e => {
         hexSprite.filters = [outlineFilterBlue];
-      })
+      });
 
       hexSprite.addListener('mouseout', e => {
         hexSprite.filters = [];
-      })
+      });
 
       this.boardContainer.addChild(hexSprite);
     });
   }
 
   mount() {
-    document.querySelector('#board')!.appendChild(this.app.view)
+    document.querySelector('#board')!.appendChild(this.app.view);
+  }
+
+  unmount() {
+    this.app.view.remove();
   }
 }
 
 export const init = () => {
-  const renderer = new PixiRendarer();
+  const renderer = new PixiRenderer();
 
-  renderer.mount()
+  renderer.mount();
 
-  game.state.subscribe(a => {
+  const sub = game.state.subscribe(a => {
     renderer.render(a.board);
   });
-}
+
+  return () => {
+    renderer.unmount();
+    sub.unsubscribe();
+  };
+};
