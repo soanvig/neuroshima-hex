@@ -1,5 +1,5 @@
 import { v1 } from 'uuid';
-import { Board, getBoard } from './Board';
+import { Board, getBoard, getNeutralDirection, replaceToken, rotateToken, Vector } from './Board';
 import { sampleTokenId } from './tokens';
 
 export interface Game {
@@ -15,7 +15,7 @@ export const createGame = (): Game => ({
     ...tile,
     token: ({
       id: sampleTokenId(),
-      direction: { x: 0, y: -1, z: 1 },
+      direction: getNeutralDirection(),
     }),
   })),
 });
@@ -36,4 +36,14 @@ export const randomizeBoard = (game: Game): Game => updateGameVersion({
       direction: { x: 0, y: -1, z: 1 },
     }),
   })),
+});
+
+export const placeToken = (game: Game) => (pos: Vector, tokenId: string): Game => ({
+  ...game,
+  board: replaceToken(game.board, pos, tokenId),
+});
+
+export const randomTokenRotate = (game: Game) => (pos: Vector): Game => ({
+  ...game,
+  board: rotateToken(game.board, pos),
 });

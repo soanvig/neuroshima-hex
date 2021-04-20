@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import * as Honeycomb from 'honeycomb-grid';
 import { sample } from 'lodash';
 import { OutlineFilter } from '@pixi/filter-outline';
-import { Board, getToken } from '../domain/Board';
+import { Board, getToken, Vector } from '../domain/Board';
 import { getTokenGraphics } from '../domain/tokens';
 
 const outlineFilterBlue = new OutlineFilter(4, 0x99ff99);
@@ -77,7 +77,7 @@ export class PixiRenderer implements Renderer {
 
       hexSprite.x = hexOrigin.x + hex.center().x;
       hexSprite.y = hexOrigin.y + hex.center().y;
-      hexSprite.rotation = sample([0, 120, 60, 180, 240, 300])! * Math.PI / 180;
+      hexSprite.rotation = this.mapDirectionToRotation(token.direction);
 
       hexSprite.addListener('click', e => {
         console.log(hex);
@@ -97,5 +97,20 @@ export class PixiRenderer implements Renderer {
 
   mount(element: Element) {
     element.appendChild(this.app.view);
+  }
+
+  private mapDirectionToRotation(dir: Vector): number {
+    const directionMap: Record<string, number> = {
+      '0,-1,1': 0,
+      '0,1,-1': 180,
+
+      '-1,0,1': 60,
+      '1,0,-1': 240,
+
+      '-1,1,0': 120,
+      '1,-1,0': 300,
+    };
+
+    return directionMap[`${dir.x},${dir.y},${dir.z}`] * Math.PI / 180;
   }
 }

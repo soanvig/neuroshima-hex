@@ -55,6 +55,7 @@ const initStateLogging = () => {
 
 export const stateManager = {
   state$: store.localState.asObservable(),
+  remoteState$: store.remoteState.asObservable(),
   init(gameId: string) {
     const unsubs = [
       initRemoteStateUpdate(gameId),
