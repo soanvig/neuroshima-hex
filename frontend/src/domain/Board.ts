@@ -19,7 +19,8 @@ export interface BaseToken {
 }
 
 // Ingame token
-export interface Token extends BaseToken {
+export interface Token {
+  id: string;
   direction: Vector;
 }
 

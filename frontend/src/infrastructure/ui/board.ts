@@ -4,6 +4,7 @@ import { Board, getToken } from '../../domain/Board';
 import { game } from '../../application/game';
 import { sample } from 'lodash';
 import { OutlineFilter } from '@pixi/filter-outline';
+import { getTokenGraphics } from '../../domain/tokens';
 
 const outlineFilterBlue = new OutlineFilter(4, 0x99ff99);
 
@@ -62,7 +63,7 @@ class PixiRendarer implements Rendered {
       })!;
 
       const hexOrigin = hex.toPoint();
-      const hexSprite = PIXI.Sprite.from(token?.graphics);
+      const hexSprite = PIXI.Sprite.from(getTokenGraphics(token.id));
 
       hexSprite.interactive = true;
       hexSprite.anchor.set(0.5);

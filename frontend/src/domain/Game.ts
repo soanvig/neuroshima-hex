@@ -1,7 +1,6 @@
-import { sample } from 'lodash';
 import { v1 } from 'uuid';
 import { Board, getBoard } from './Board';
-import { tokens } from './tokens';
+import { sampleTokenId } from './tokens';
 
 export interface Game {
   version: string;
@@ -15,7 +14,7 @@ export const createGame = (): Game => ({
   board: getBoard(3).map(tile => ({
     ...tile,
     token: ({
-      ...tokens[sample(['base', 'sieciarz'])!],
+      id: sampleTokenId(),
       direction: { x: 0, y: -1, z: 1 },
     })
   })),
@@ -31,7 +30,7 @@ export const randomizeBoard = (game: Game): Game => updateGameVersion({
   board: getBoard(3).map(tile => ({
     ...tile,
     token: ({
-      ...tokens[sample(['base', 'sieciarz'])!],
+      id: sampleTokenId(),
       direction: { x: 0, y: -1, z: 1 },
     })
   })),

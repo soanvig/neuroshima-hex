@@ -2,8 +2,9 @@ import baseTile from '../../assets/borgo/borgo-sztab.png';
 import sieciarzTile from '../../assets/borgo/borgo-sieciarz.png';
 
 import { BaseToken } from './Board';
+import { sample } from 'lodash';
 
-export const tokens: Record<string, BaseToken> = {
+const tokens: Record<string, BaseToken> = {
   'base': {
     id: 'base',
     graphics: baseTile,
@@ -12,4 +13,13 @@ export const tokens: Record<string, BaseToken> = {
     id: 'sieciarz',
     graphics: sieciarzTile,
   }
+}
+
+export const sampleTokenId = () => sample(Object.keys(tokens))!;
+export const getTokenGraphics = (tokenId: string) => {
+  if (!tokens[tokenId]) {
+    throw new Error(`No token of id ${tokenId}`);
+  }
+
+  return tokens[tokenId].graphics;
 }
