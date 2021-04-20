@@ -16,6 +16,16 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
+        test: /\.(svelte)$/,
+        use: {
+          loader: 'svelte-loader',
+          options: {
+            preprocess: require('svelte-preprocess')({
+            }),
+          },
+        },
+      },
+      {
         test: /\.(png|jpg|gif)$/i,
         use: [
           {
@@ -29,7 +39,11 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js', '.svelte'],
+    alias: {
+      svelte: path.resolve('node_modules', 'svelte'),
+    },
+    mainFields: ['svelte', 'browser', 'module', 'main'],
   },
   plugins: [
     new HtmlWebpackPlugin({

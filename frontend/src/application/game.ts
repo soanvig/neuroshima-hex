@@ -4,7 +4,7 @@ import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { filter, map, mapTo, switchMap, takeUntil } from 'rxjs/operators';
 import { asyncTap } from '../rxjs-utils';
 import { createGame, Game, randomizeBoard, updateGameVersion } from '../domain/Game';
-import { User } from '../domain/User';
+import type { User } from '../domain/User';
 
 const getGameId = (): string => {
   const queryParams = new URLSearchParams(window.location.search);

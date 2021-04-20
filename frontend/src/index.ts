@@ -1,7 +1,7 @@
 import { auth } from './application/auth';
 import { game } from './application/game';
-import { router } from './infrastructure/ui/router';
 import { firebaseInit } from './infrastructure/firebase';
+import App from './App.svelte';
 
 window.addEventListener('load', () => {
   if (!game.getGameId()) {
@@ -11,9 +11,12 @@ window.addEventListener('load', () => {
 
   auth.init();
   game.init();
-  router.init();
 
   firebaseInit();
 
-  document.querySelector('#logout')?.addEventListener('click', auth.logout);
+  // document.querySelector('#logout')?.addEventListener('click', auth.logout);
+
+  new App({
+    target: document.querySelector('#app')!,
+  });
 });

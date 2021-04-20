@@ -1,19 +1,19 @@
 import baseTile from '../../assets/borgo/borgo-sztab.png';
 import sieciarzTile from '../../assets/borgo/borgo-sieciarz.png';
 
-import { BaseToken } from './Board';
+import type { BaseToken } from './Board';
 import { sample } from 'lodash';
 
 const tokens: Record<string, BaseToken> = {
-  'base': {
+  base: {
     id: 'base',
     graphics: baseTile,
   },
-  'sieciarz': {
+  sieciarz: {
     id: 'sieciarz',
     graphics: sieciarzTile,
-  }
-}
+  },
+};
 
 export const sampleTokenId = () => sample(Object.keys(tokens))!;
 export const getTokenGraphics = (tokenId: string) => {
@@ -22,4 +22,4 @@ export const getTokenGraphics = (tokenId: string) => {
   }
 
   return tokens[tokenId].graphics;
-}
+};

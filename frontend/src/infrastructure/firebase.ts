@@ -3,7 +3,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 
 import * as firebaseui from 'firebaseui';
-import { User } from '../domain/User';
+import type { User } from '../domain/User';
 
 const onLoginListeners: ((u: User) => void)[] = [];
 const onLogoutListeners: VoidFunction[] = [];
@@ -41,9 +41,8 @@ export const onLogout = (cb: VoidFunction) => onLogoutListeners.push(cb);
 export const logout = () => firebase.auth().signOut();
 export const db = firebaseDb;
 export const firestore = firebase.firestore;
+export const appendAuthUi = (el: Element) => ui.start(el, uiConfig);
 export const firebaseInit = () => {
-  ui.start('#login', uiConfig);
-
   firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       onLoginListeners.forEach(cb => cb(user as any)); // @TODO  type is incompatible because email may be null but whatever
