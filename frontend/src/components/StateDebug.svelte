@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { game } from '../application/game';
+import { stateManager } from '../application/stateManager';
 
-  let state = game.state$;
+  let state = stateManager.state$;
 </script>
 
 <ul>

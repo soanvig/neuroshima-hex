@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { game } from '../application/game';
-  import { PixiRenderer } from '../renderers/PixiRenderer';
+import { onMount } from 'svelte';
+import { stateManager } from '../application/stateManager';
+import { PixiRenderer } from '../renderers/PixiRenderer';
 
   let container: Element;
 
@@ -10,7 +10,7 @@
 
     renderer.mount(container);
 
-    const subscription = game.state$.subscribe(a => {
+    const subscription = stateManager.state$.subscribe(a => {
       renderer.render(a.board);
     });
 

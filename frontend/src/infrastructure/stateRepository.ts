@@ -1,4 +1,4 @@
-import { createGame, Game, updateGameVersion } from '../domain/Game';
+import { createGame, Game, getNewVersion, updateGameVersion } from '../domain/Game';
 import { db, firestore } from './firebase';
 
 export const stateRepository = {
@@ -12,6 +12,7 @@ export const stateRepository = {
   async addPlayer(gameId: string, playerName: string) {
     await db.collection('games').doc(gameId).update({
       players: firestore.FieldValue.arrayUnion(playerName),
+      version: getNewVersion(),
     });
   },
   async ensureGame(gameId: string) {

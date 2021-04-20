@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { game } from '../application/game';
-  import Board from '../components/Board.svelte';
-  import StateDebug from '../components/StateDebug.svelte';
+import { game } from '../application/game';
+import { stateManager } from '../application/stateManager';
+import Board from '../components/Board.svelte';
+import StateDebug from '../components/StateDebug.svelte';
 
   function handleSendClick() {
-    game.sendState();
+    stateManager.send();
   }
 
   function handleRandomizeClick () {

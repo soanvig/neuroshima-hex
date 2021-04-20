@@ -20,9 +20,11 @@ export const createGame = (): Game => ({
   })),
 });
 
+export const getNewVersion = () => v1(); // timestamped uuid
+
 export const updateGameVersion = (game: Game): Game => ({
   ...game,
-  version: v1(), // timestamped uuid
+  version: getNewVersion(),
 });
 
 export const randomizeBoard = (game: Game): Game => updateGameVersion({
