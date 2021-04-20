@@ -1,8 +1,8 @@
 import { logout, onLogin, onLogout } from '../infrastructure/firebase';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, skip } from 'rxjs/operators';
-import { User } from '../domain/User';
-import { router } from '../infrastructure/ui/router';
+import type { User } from '../domain/User';
+import { router } from '../infrastructure/router';
 
 const store = {
   user: new BehaviorSubject<null | User>(null),

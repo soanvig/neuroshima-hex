@@ -1,18 +1,14 @@
+import type { Renderer } from './Renderer';
 import * as PIXI from 'pixi.js';
 import * as Honeycomb from 'honeycomb-grid';
-import { Board, getToken } from '../../../domain/Board';
-import { game } from '../../../application/game';
 import { sample } from 'lodash';
 import { OutlineFilter } from '@pixi/filter-outline';
-import { getTokenGraphics } from '../../../domain/tokens';
+import { Board, getToken } from '../domain/Board';
+import { getTokenGraphics } from '../domain/tokens';
 
 const outlineFilterBlue = new OutlineFilter(4, 0x99ff99);
 
-interface Rendered {
-  render(board: Board): void;
-}
-
-class PixiRenderer implements Rendered {
+export class PixiRenderer implements Renderer {
   private grid: Honeycomb.Grid;
   private app: PIXI.Application;
   private boardContainer = new PIXI.Container();
@@ -99,26 +95,7 @@ class PixiRenderer implements Rendered {
     });
   }
 
-  mount() {
-    document.querySelector('#board')!.appendChild(this.app.view);
-  }
-
-  unmount() {
-    this.app.view.remove();
+  mount(element: Element) {
+    element.appendChild(this.app.view);
   }
 }
-
-export const init = () => {
-  const renderer = new PixiRenderer();
-
-  renderer.mount();
-
-  const sub = game.state$.subscribe(a => {
-    renderer.render(a.board);
-  });
-
-  return () => {
-    renderer.unmount();
-    sub.unsubscribe();
-  };
-};

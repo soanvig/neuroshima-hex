@@ -2,10 +2,11 @@
   "name": "neuroshima-hex-frontend",
   "private": true,
   "scripts": {
-    "start": "webpack serve --open"
+    "start": "webpack serve"
   },
   "devDependencies": {
     "@leocode/eslint-config": "^1.1.0",
+    "@tsconfig/svelte": "^1.0.10",
     "@types/lodash": "^4.14.168",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "4",
@@ -13,9 +14,14 @@
     "eslint": "7",
     "eslint-plugin-react": "7",
     "eslint-plugin-react-hooks": "4",
+    "eslint-plugin-svelte3": "^3.1.2",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.1",
     "serve": "^11.3.2",
+    "svelte": "^3.37.0",
+    "svelte-check": "^1.4.0",
+    "svelte-loader": "^3.1.1",
+    "svelte-preprocess": "^4.7.2",
     "ts-loader": "^9.0.0",
     "typescript": "4",
     "url-loader": "^4.1.1",
