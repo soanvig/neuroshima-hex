@@ -16,7 +16,7 @@ export const createGame = (): Game => ({
     token: ({
       id: sampleTokenId(),
       direction: { x: 0, y: -1, z: 1 },
-    })
+    }),
   })),
 });
 
@@ -32,6 +32,6 @@ export const randomizeBoard = (game: Game): Game => updateGameVersion({
     token: ({
       id: sampleTokenId(),
       direction: { x: 0, y: -1, z: 1 },
-    })
+    }),
   })),
-})
+});

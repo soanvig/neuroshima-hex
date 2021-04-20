@@ -10,16 +10,11 @@ const getGameId = (): string => {
   const queryParams = new URLSearchParams(window.location.search);
   const gameId = queryParams.get('gameId');
 
-  if (!gameId) {
-    window.alert('No gameId defined man, gtfo');
-    throw new Error('No gameId defined man, gtfo');
-  }
-
-  return gameId;
-}
+  return gameId!; // this is verified during system init
+};
 
 const store = {
-  gameId: getGameId(),
+  gameId: '',
   remoteState: new BehaviorSubject<Game>(createGame()),
   localState: new BehaviorSubject<Game>(createGame()),
 };
@@ -52,7 +47,7 @@ const initRemoteStateUpdate = () => {
     })),
     takeUntil(auth.logout$),
   ).subscribe(store.remoteState);
-}
+};
 
 /**
  * Update local state whenever remote store is updated and the version is greater
@@ -61,7 +56,7 @@ const initRemoteToLocalStateUpdate = () => {
   store.remoteState.pipe(
     filter(state => state.version > store.localState.value.version),
   ).subscribe(store.localState);
-}
+};
 
 /**
  * Sends state to remote, after it is updated locally and sendState is clicked
@@ -69,28 +64,31 @@ const initRemoteToLocalStateUpdate = () => {
 const initLocalStateSend = () => {
   store.localState.pipe(
     switchMap(state => sendStateSubject.pipe(mapTo(state))), // wait for sendStateSubject
-    switchMap(state => from(stateRepository.saveState(store.gameId, state)))
-  ).subscribe()
-}
+    switchMap(state => from(stateRepository.saveState(store.gameId, state))),
+  ).subscribe();
+};
 
 const initStateLogging = () => {
   store.localState.subscribe(state => console.log(`Local state updated: ${state.version}`));
   store.remoteState.subscribe(state => console.log(`Remote state updated: ${state.version}`));
-}
+};
 
 export const game = {
   init() {
+    store.gameId = getGameId();
+
     initRemoteStateUpdate();
     initRemoteToLocalStateUpdate();
     initLocalStateSend();
     initStateLogging();
   },
-  state: store.localState.asObservable(),
+  state$: store.localState.asObservable(),
   updateLocalState: (state: Game) => {
     store.localState.next(updateGameVersion(state));
   },
   sendState: () => sendStateSubject.next(),
   randomizeBoard: () => {
     game.updateLocalState(randomizeBoard(store.localState.value));
-  }
+  },
+  getGameId,
 };

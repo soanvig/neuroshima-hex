@@ -1,4 +1,4 @@
-import { createGame, Game } from '../domain/Game';
+import { createGame, Game, updateGameVersion } from '../domain/Game';
 import { db, firestore } from './firebase';
 
 export const stateRepository = {
@@ -18,10 +18,10 @@ export const stateRepository = {
     const doc = await db.collection('games').doc(gameId).get();
 
     if (!doc.exists) {
-      await db.collection('games').doc(gameId).set(createGame());
+      await db.collection('games').doc(gameId).set(updateGameVersion(createGame()));
     }
   },
   async saveState(gameId: string, game: Game) {
     await db.collection('games').doc(gameId).set(game);
-  }
+  },
 };

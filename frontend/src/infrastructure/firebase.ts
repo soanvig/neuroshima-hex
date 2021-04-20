@@ -38,6 +38,7 @@ const firebaseDb = firebase.firestore();
 
 export const onLogin = (cb: (u: User) => void) => onLoginListeners.push(cb);
 export const onLogout = (cb: VoidFunction) => onLogoutListeners.push(cb);
+export const logout = () => firebase.auth().signOut();
 export const db = firebaseDb;
 export const firestore = firebase.firestore;
 export const firebaseInit = () => {
@@ -50,4 +51,4 @@ export const firebaseInit = () => {
       onLogoutListeners.forEach(cb => cb());
     }
   });
-}
+};

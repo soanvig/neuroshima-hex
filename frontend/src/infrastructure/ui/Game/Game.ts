@@ -1,7 +1,7 @@
-import { game } from '../../application/game';
+import { game } from '../../../application/game';
 import { map } from 'rxjs/operators';
-import { Component } from './Component';
-import * as board from './board';
+import { Component } from '../Component';
+import * as board from './Board';
 
 const html = {
   state: document.getElementById('game-state')!,
@@ -21,7 +21,7 @@ const sendState = () => {
 
 export const gamePage: Component = {
   mount() {
-    const subscription = game.state.pipe(
+    const subscription = game.state$.pipe(
       map(v => JSON.stringify(v, null, 2)),
     ).subscribe(state => html.state.innerHTML = state);
 

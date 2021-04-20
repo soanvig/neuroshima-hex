@@ -1,4 +1,4 @@
-import { onLogin, onLogout } from '../infrastructure/firebase';
+import { logout, onLogin, onLogout } from '../infrastructure/firebase';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, skip } from 'rxjs/operators';
 import { User } from '../domain/User';
@@ -19,6 +19,7 @@ export const auth = {
       router.goTo('login');
     });
   },
+  logout: () => logout(), // this should synchronize back to auth store
   logout$: store.user.pipe(
     skip(1), // @NOTE skip initial state, that may fuckup something
     filter(v => v === null),

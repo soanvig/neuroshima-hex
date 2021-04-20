@@ -1,13 +1,13 @@
 import { BehaviorSubject } from 'rxjs';
 import { pairwise } from 'rxjs/operators';
 import { Component } from './Component';
-import { gamePage } from './game';
-import { loginPage } from './login';
+import { gamePage } from './Game/Game';
+import { loginPage } from './Login/Login';
 
 const routes: Record<string, Component> = {
-  'login': loginPage,
-  'game': gamePage,
-}
+  login: loginPage,
+  game: gamePage,
+};
 
 const routeStore = new BehaviorSubject('');
 
@@ -25,7 +25,7 @@ const renderComponent = ([prev, current]: [string, string]) => {
     const el: HTMLElement = document.querySelector(`#${current}.page`)!;
     el.style.display = 'block';
   }
-}
+};
 
 export const router = {
   init() {
@@ -37,5 +37,5 @@ export const router = {
   },
   goTo(route: string) {
     routeStore.next(route);
-  }
+  },
 };
