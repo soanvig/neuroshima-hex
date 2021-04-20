@@ -19,7 +19,7 @@ export interface Token {
   direction: Vector;
 }
 
-type StringifiedBoard = { size: number, tiles: Tile[] };
+type Attrs = { size: number, tiles: Tile[] };
 
 export class Board {
   private size: number;
@@ -30,8 +30,12 @@ export class Board {
     this.size = ctor.size;
   }
 
-  public getRandomTile(): Tile {
-    return sample(this.tiles)!;
+  public getRandomFilledTile(): Tile | null {
+    return sample(this.tiles.filter(t => Boolean(t.token))) ?? null;
+  }
+
+  public getRandomEmptyTile(): Tile | null {
+    return sample(this.tiles.filter(t => !Boolean(t.token))) ?? null;
   }
 
   public getToken(vector: Vector): Token | null {
@@ -63,19 +67,17 @@ export class Board {
     tile.token.direction = direction;
   }
 
-  public toJSON(): string {
-    return JSON.stringify({
+  public toAttrs(): Attrs {
+    return {
       tiles: this.tiles,
       size: this.size,
-    } as StringifiedBoard);
+    };
   }
 
-  public static fromJSON(json: string): Board {
-    const data: StringifiedBoard = JSON.parse(json);
-
+  public static fromAttrs(attrs: Attrs): Board {
     return new Board({
-      tiles: data.tiles,
-      size: data.size,
+      tiles: attrs.tiles,
+      size: attrs.size,
     });
   }
 

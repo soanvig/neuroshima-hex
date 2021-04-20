@@ -1,11 +1,11 @@
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { filter, map, mapTo, switchMap } from 'rxjs/operators';
-import { createGame, Game, updateGameVersion } from '../domain/Game';
+import { Game } from '../domain/Game';
 import { stateRepository } from '../infrastructure/stateRepository';
 
 const store = {
-  remoteState: new BehaviorSubject<Game>(createGame()),
-  localState: new BehaviorSubject<Game>(createGame()),
+  remoteState: new BehaviorSubject<Game>(Game.create()),
+  localState: new BehaviorSubject<Game>(Game.create()),
 };
 
 const sendStateSubject = new Subject<void>();
@@ -26,7 +26,7 @@ const initRemoteStateUpdate = (gameId: string) => {
  */
 const initRemoteToLocalStateUpdate = () => {
   const sub = store.remoteState.pipe(
-    filter(state => state.version > store.localState.value.version),
+    filter(state => state.getVersion() > store.localState.value.getVersion()),
   ).subscribe(store.localState);
 
   return () => sub.unsubscribe();
@@ -45,8 +45,8 @@ const initLocalStateSend = (gameId: string) => {
 };
 
 const initStateLogging = () => {
-  const subLocal = store.localState.subscribe(state => console.log(`Local state updated: ${state.version}`));
-  const subRemote = store.remoteState.subscribe(state => console.log(`Remote state updated: ${state.version}`));
+  const subLocal = store.localState.subscribe(state => console.log(`Local state updated: ${state.getVersion()}`));
+  const subRemote = store.remoteState.subscribe(state => console.log(`Remote state updated: ${state.getVersion()}`));
 
   return () => {
     subLocal.unsubscribe();
@@ -71,7 +71,7 @@ export const stateManager = {
     return store.localState.value;
   },
   update: (state: Game) => {
-    store.localState.next(updateGameVersion(state));
+    store.localState.next(state);
   },
   send: () => sendStateSubject.next(),
 };

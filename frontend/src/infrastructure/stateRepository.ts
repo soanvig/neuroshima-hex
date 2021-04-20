@@ -1,5 +1,4 @@
-import { Board } from '../domain/Board';
-import { createGame, Game, getNewVersion, updateGameVersion } from '../domain/Game';
+import { Game, getNewVersion } from '../domain/Game';
 import { db, firestore } from './firebase';
 
 export const stateRepository = {
@@ -10,10 +9,7 @@ export const stateRepository = {
         const data = doc.data();
 
         if (data) {
-          cb({
-            ...data,
-            board: Board.fromJSON(data.board),
-          } as Game);
+          cb(Game.fromAttrs(data as any));
         } else {
           cb(null);
         }
@@ -29,15 +25,10 @@ export const stateRepository = {
     const doc = await db.collection('games').doc(gameId).get();
 
     if (!doc.exists) {
-      const game = updateGameVersion(createGame());
-
-      await db.collection('games').doc(gameId).set({
-        ...game,
-        board: game.board.toJSON(),
-      });
+      await db.collection('games').doc(gameId).set(Game.create().toAttrs());
     }
   },
   async saveState(gameId: string, game: Game) {
-    await db.collection('games').doc(gameId).set(game);
+    await db.collection('games').doc(gameId).set(game.toAttrs());
   },
 };

@@ -2,7 +2,6 @@ import { stateRepository } from '../infrastructure/stateRepository';
 import { auth } from './auth';
 import { map } from 'rxjs/operators';
 import { asyncTap } from '../rxjs-utils';
-import { randomTokenRotate, placeRandomToken } from '../domain/Game';
 import type { User } from '../domain/User';
 import { stateManager } from './stateManager';
 
@@ -47,12 +46,14 @@ export const game = {
   placeRandomToken: () => {
     const state = stateManager.getState();
 
-    stateManager.update(placeRandomToken(state));
+    state.placeRandomToken();
+    stateManager.update(state);
   },
   rotateRandomToken: () => {
     const state = stateManager.getState();
 
-    stateManager.update(randomTokenRotate(state));
+    state.rotateRandomToken();
+    stateManager.update(state);
   },
   getGameId,
 };
