@@ -94,9 +94,15 @@ export class Board {
   }
 
   static create(param: { tiles: Tile[] }) {
+    const min = -1 * (3 - 1);
+    const max = 3 - 1;
+
     return new Board({
       size: 3,
-      tiles: param.tiles,
+      tiles: generatePossibleVectors(min, max).map(pos => ({
+        pos,
+        token: param.tiles.find(t => areVectorsEqual(pos, t.pos))?.token ?? null,
+      })),
     });
   }
 }

@@ -22,12 +22,14 @@ export class Game {
   public placeRandomToken(userId: string) {
     const board = this.getBoard();
     const tile = board.getRandomEmptyTile();
+    console.log(userId, tile, board);
 
     if (!tile) {
       return;
     }
 
     const player = this.players.find(p => p.id === userId);
+
 
     if (!player) {
       return;
