@@ -1,7 +1,6 @@
 import type { Renderer } from './Renderer';
 import * as PIXI from 'pixi.js';
 import * as Honeycomb from 'honeycomb-grid';
-import { sample } from 'lodash';
 import { OutlineFilter } from '@pixi/filter-outline';
 import type { Board } from '../domain/Board';
 import { getTokenGraphics } from '../domain/tokens';
@@ -26,7 +25,7 @@ export class PixiRenderer implements Renderer {
   }
 
   private initGrid() {
-    const Hex = Honeycomb.extendHex({ size: 65, orientation: 'pointy' });
+    const Hex = Honeycomb.extendHex({ size: 65, orientation: 'flat' });
     const Grid = Honeycomb.defineGrid(Hex);
 
     return Grid.hexagon({
@@ -116,6 +115,6 @@ export class PixiRenderer implements Renderer {
       '1,-1,0': 300,
     };
 
-    return directionMap[`${dir.x},${dir.y},${dir.z}`] * Math.PI / 180;
+    return directionMap[`${ dir.x },${ dir.y },${ dir.z }`] * Math.PI / 180;
   }
 }
