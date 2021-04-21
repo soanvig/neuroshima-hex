@@ -47,9 +47,15 @@ export const game = {
     initSetup(gameId);
   },
   placeRandomToken: () => {
+    const user = auth.getUser();
+
+    if (!user) {
+      return;
+    }
+
     const state = stateManager.getState();
 
-    state.placeRandomToken();
+    state.placeRandomToken(user.email);
     stateManager.update(state);
   },
   rotateRandomToken: () => {
