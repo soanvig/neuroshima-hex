@@ -7,7 +7,6 @@ export const stateRepository = {
       .doc(gameId)
       .onSnapshot((doc) => {
         const data = doc.data();
-
         if (data) {
           cb(Game.fromAttrs(data as any));
         } else {
@@ -21,10 +20,20 @@ export const stateRepository = {
       version: getNewVersion(),
     });
   },
+  async getOrCreate(gameId: string) {
+    const doc = await db.collection('games').doc(gameId).get();
+
+    if (!doc.exists) {
+      return Game.create();
+    } else {
+      return Game.fromAttrs(doc.data() as any);
+    }
+  },
   async ensureGame(gameId: string) {
     const doc = await db.collection('games').doc(gameId).get();
 
     if (!doc.exists) {
+      const game = Game.create().toAttrs();
       await db.collection('games').doc(gameId).set(Game.create().toAttrs());
     }
   },

@@ -11,7 +11,8 @@ import { PixiRenderer } from '../renderers/PixiRenderer';
     renderer.mount(container);
 
     const subscription = stateManager.state$.subscribe(a => {
-      renderer.render(a.board);
+      const board = a.getBoard();
+      renderer.render(board);
     });
 
     return () => subscription.unsubscribe();

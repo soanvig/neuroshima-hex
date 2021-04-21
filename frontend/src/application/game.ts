@@ -18,8 +18,15 @@ const initSetup = (gameId: string) => {
       gameId,
       user,
     })),
-    asyncTap(ensureGame),
-    asyncTap(join),
+    asyncTap(async ({ gameId, user }) => {
+      const game = await stateRepository.getOrCreate(gameId);
+
+      game.addPlayer({
+        id: user.email,
+      });
+
+      await stateRepository.saveState(gameId, game);
+    }),
   ).subscribe();
 
   return () => sub.unsubscribe();
@@ -29,10 +36,6 @@ interface InitParams {
   gameId: string;
   user: User;
 }
-
-const ensureGame = async ({ gameId }: InitParams) => {
-  await stateRepository.ensureGame(gameId);
-};
 
 const join = async ({ gameId, user }: InitParams) => {
   await stateRepository.addPlayer(gameId, user.email);

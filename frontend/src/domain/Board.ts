@@ -1,6 +1,5 @@
 import { sample } from 'lodash';
-import { sampleTokenId } from './tokens';
-import { areVectorsEqual, getNeutralDirection, getRandomDirection, Vector, generatePossibleVectors } from './Vector';
+import { areVectorsEqual, generatePossibleVectors, getNeutralDirection, Vector } from './Vector';
 
 interface Tile {
   pos: Vector;
@@ -47,7 +46,7 @@ export class Board {
     const tile = this.tiles[index];
 
     if (tile.token) {
-      throw new Error(`Cannot place token on existing token ${pos}`);
+      throw new Error(`Cannot place token on existing token ${ pos }`);
     }
 
     tile.token = {
@@ -61,7 +60,7 @@ export class Board {
     const tile = this.tiles[index];
 
     if (!tile.token) {
-      throw new Error(`Cannot rotate not existing token ${pos}`);
+      throw new Error(`Cannot rotate not existing token ${ pos }`);
     }
 
     tile.token.direction = direction;
@@ -91,6 +90,13 @@ export class Board {
         pos,
         token: null,
       })),
+    });
+  }
+
+  static create(param: { tiles: Tile[] }) {
+    return new Board({
+      size: 3,
+      tiles: param.tiles,
     });
   }
 }

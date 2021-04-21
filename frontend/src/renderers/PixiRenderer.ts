@@ -26,7 +26,7 @@ export class PixiRenderer implements Renderer {
   }
 
   private initGrid() {
-    const Hex = Honeycomb.extendHex({ size: 65, orientation: 'flat' });
+    const Hex = Honeycomb.extendHex({ size: 65, orientation: 'pointy' });
     const Grid = Honeycomb.defineGrid(Hex);
 
     return Grid.hexagon({

@@ -1,18 +1,19 @@
-import { v1 } from 'uuid';
 import { Board } from './Board';
-import { sampleTokenId } from './tokens';
+import { armies } from './tokens';
 import { getRandomDirection } from './Vector';
+import { Player, PlayerAttrs } from './Player';
+import { sample } from 'lodash';
 
-export const getNewVersion = () => v1(); // timestamped uuid
+export const getNewVersion = () => Date.now(); // timestamped uuid
 
-type Attrs = { version: string, players: string[]; board: ReturnType<Board['toAttrs']> };
+type Attrs = { version: number, players: PlayerAttrs[]; board: ReturnType<Board['toAttrs']> };
 
 export class Game {
-  private version: string;
-  private players: string[];
+  private version: number;
+  private players: Player[];
   private board: Board;
 
-  private constructor(ctor: { version: string, players: string[], board: Board }) {
+  private constructor(ctor: { version: number, players: Player[], board: Board }) {
     this.version = ctor.version;
     this.players = ctor.players;
     this.board = ctor.board;
@@ -29,10 +30,13 @@ export class Game {
       return;
     }
 
-    this.board.placeToken(
-      tile.pos,
-      sampleTokenId(),
-    );
+    const player = sample(this.players);
+
+    if (!player) {
+      return;
+    }
+
+    player.placeRandomToken(tile.pos);
 
     this.version = getNewVersion();
   }
@@ -55,7 +59,7 @@ export class Game {
   public toAttrs(): Attrs {
     return {
       board: this.board.toAttrs(),
-      players: this.players,
+      players: this.players.map(p => p.toAttrs()),
       version: this.version,
     };
   }
@@ -63,16 +67,35 @@ export class Game {
   public static fromAttrs(attrs: Attrs): Game {
     return new Game({
       board: Board.fromAttrs(attrs.board),
-      players: attrs.players,
+      players: attrs.players.map(p => Player.fromAttrs(p)),
       version: attrs.version,
     });
   }
 
   public static create(): Game {
     return new Game({
-      version: getNewVersion(),
+      version: 0,
       players: [],
       board: Board.empty(3),
+    });
+  }
+
+  addPlayer(param: { id: string }) {
+    if (this.players.some(p => p.id === param.id)) {
+      return;
+    }
+
+    this.version = getNewVersion();
+    this.players.push(Player.create(
+      param.id,
+      armies[this.players.length % armies.length],
+    ));
+  }
+
+  // test
+  getBoard() {
+    return Board.create({
+      tiles: this.players.flatMap(p => p.getTilesOnBoard()),
     });
   }
 }
