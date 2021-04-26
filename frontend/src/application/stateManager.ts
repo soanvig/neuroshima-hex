@@ -1,5 +1,6 @@
 import { BehaviorSubject, from, Observable, Subject } from 'rxjs';
 import { filter, map, mapTo, switchMap } from 'rxjs/operators';
+import { compact } from '../../utils/rxjs';
 import { Game } from '../domain/Game';
 import { stateRepository } from '../infrastructure/stateRepository';
 
@@ -14,8 +15,7 @@ const initRemoteStateUpdate = (gameId: string) => {
   const sub = new Observable<Game | null>((subscriber) => {
     stateRepository.onStateChange(gameId, (state: Game | null) => subscriber.next(state));
   }).pipe(
-    filter(v => Boolean(v)), // this may be undefined in firebase on nit
-    map(v => v as Game), // only typing
+    compact(), // this may be undefined in firebase on init
   ).subscribe(store.remoteState);
 
   return () => sub.unsubscribe();

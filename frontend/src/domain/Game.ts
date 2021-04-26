@@ -2,7 +2,7 @@ import { Board } from './Board';
 import { armies } from './tokens';
 import { Player, PlayerAttrs } from './Player';
 
-export const getNewVersion = () => Date.now(); // timestamped uuid
+export const getNewVersion = () => Date.now();
 
 type Attrs = { version: number, players: PlayerAttrs[]; };
 
@@ -22,18 +22,12 @@ export class Game {
   public placeRandomToken(userId: string) {
     const board = this.getBoard();
     const tile = board.getRandomEmptyTile();
-    console.log(userId, tile, board);
 
     if (!tile) {
       return;
     }
 
-    const player = this.players.find(p => p.id === userId);
-
-
-    if (!player) {
-      return;
-    }
+    const player = this.getPlayer(userId);
 
     player.placeRandomToken(tile.pos);
 
@@ -64,7 +58,7 @@ export class Game {
     });
   }
 
-  addPlayer(param: { id: string }) {
+  public addPlayer(param: { id: string }) {
     if (this.players.some(p => p.id === param.id)) {
       return;
     }
@@ -77,9 +71,19 @@ export class Game {
   }
 
   // test
-  getBoard() {
+  public getBoard() {
     return Board.create({
       tiles: this.players.flatMap(p => p.getTilesOnBoard()),
     });
+  }
+
+  private getPlayer(id: string): Player {
+    const player = this.players.find(p => p.id === id);
+
+    if (!player) {
+      throw new Error(`Unknown player ${id}`);
+    }
+
+    return player;
   }
 }
