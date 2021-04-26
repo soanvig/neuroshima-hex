@@ -77,7 +77,7 @@ export class Game {
     });
   }
 
-  private getPlayer(id: string): Player {
+  public getPlayer(id: string): Player {
     const player = this.players.find(p => p.id === id);
 
     if (!player) {

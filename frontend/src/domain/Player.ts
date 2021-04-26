@@ -76,7 +76,11 @@ export class Player {
     };
   }
 
-  drawToken() {
+  public getHand(): PlayerToken[] {
+    return this.hand;
+  }
+
+  public drawToken() {
     const token = this.deck.pop();
 
     if (!token) {
@@ -90,7 +94,7 @@ export class Player {
     return token;
   }
 
-  placeRandomToken(pos: Vector) {
+  public placeRandomToken(pos: Vector) {
     const token = this.drawToken();
 
     if (!token) {
@@ -100,7 +104,7 @@ export class Player {
     this.putTokenOnBoard(token.id, pos);
   }
 
-  putTokenOnBoard(id: string, position: Vector) {
+  public putTokenOnBoard(id: string, position: Vector) {
     const token = this.findTokenInHand(id);
 
     if (!token) {
@@ -114,11 +118,11 @@ export class Player {
     this.onBoard.push(token);
   }
 
-  rotateToken() {
+  public rotateToken() {
 
   }
 
-  flipToken(id: string) {
+  public flipToken(id: string) {
     const token = this.findTokenOnBoardById(id);
 
     if (!token) {
@@ -131,7 +135,7 @@ export class Player {
     return true;
   }
 
-  killToken(id: string): boolean {
+  public killToken(id: string): boolean {
     const token = this.findTokenOnBoardById(id);
 
     if (!token) {
@@ -145,11 +149,11 @@ export class Player {
     return true;
   }
 
-  addPoints(amount: number) {
+  public addPoints(amount: number) {
     this.points += amount;
   }
 
-  subtractPoints(amount: number) {
+  public subtractPoints(amount: number) {
     this.points -= amount;
   }
 
@@ -161,7 +165,7 @@ export class Player {
     return this.hand.find(token => token.id === id);
   }
 
-  getTilesOnBoard() {
+  public getTilesOnBoard() {
     return this.onBoard.map(t => ({
       pos: t.position,
       token: {

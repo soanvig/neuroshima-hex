@@ -3,6 +3,7 @@ import { filter, map, mapTo, switchMap } from 'rxjs/operators';
 import { compact } from '../../utils/rxjs';
 import { Game } from '../domain/Game';
 import { stateRepository } from '../infrastructure/stateRepository';
+import { auth } from './auth';
 
 const store = {
   remoteState: new BehaviorSubject<Game>(Game.create()),

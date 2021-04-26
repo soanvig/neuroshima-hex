@@ -6,7 +6,7 @@ import { stateManager } from '../application/stateManager';
 </script>
 
 <ul>
-  <li>version: {$state.version}, remote version: {$remoteState.version}</li>
+  <li>version: {$state.getVersion()}, remote version: {$remoteState.getVersion()}</li>
   <li>players: {JSON.stringify($state.players)}</li>
 </ul>
 
