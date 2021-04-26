@@ -29,14 +29,6 @@ export const stateRepository = {
       return Game.fromAttrs(doc.data() as any);
     }
   },
-  async ensureGame(gameId: string) {
-    const doc = await db.collection('games').doc(gameId).get();
-
-    if (!doc.exists) {
-      const game = Game.create().toAttrs();
-      await db.collection('games').doc(gameId).set(Game.create().toAttrs());
-    }
-  },
   async saveState(gameId: string, game: Game) {
     await db.collection('games').doc(gameId).set(game.toAttrs());
   },

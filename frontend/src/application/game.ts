@@ -2,7 +2,6 @@ import { stateRepository } from '../infrastructure/stateRepository';
 import { auth } from './auth';
 import { map } from 'rxjs/operators';
 import { asyncTap } from '../rxjs-utils';
-import type { User } from '../domain/User';
 import { stateManager } from './stateManager';
 
 const getGameId = (): string => {
@@ -30,15 +29,6 @@ const initSetup = (gameId: string) => {
   ).subscribe();
 
   return () => sub.unsubscribe();
-};
-
-interface InitParams {
-  gameId: string;
-  user: User;
-}
-
-const join = async ({ gameId, user }: InitParams) => {
-  await stateRepository.addPlayer(gameId, user.email);
 };
 
 export const game = {
