@@ -2,6 +2,7 @@ import borgoBase from '../../assets/borgo/borgo-sztab.png';
 import borgoSieciarz from '../../assets/borgo/borgo-sieciarz.png';
 import molochBase from '../../assets/moloch/moloch-sztab.png';
 import molochBlocker from '../../assets/moloch/moloch-bloker.png';
+import mask from '../../assets/mask.png';
 
 import type { BaseToken } from './Board';
 import { sample } from 'lodash';
@@ -30,7 +31,6 @@ export interface Army {
   tokens: BaseToken[];
 }
 
-
 export const getTokenById = (tokenId: string) => tokens[tokenId];
 
 export const sampleTokenId = () => sample(Object.keys(tokens))!;
@@ -42,10 +42,20 @@ export const getTokenGraphics = (tokenId: string) => {
   return tokens[tokenId].graphics;
 };
 
+export const others = {
+  mask,
+};
+
 export const borgoArmy: Army = {
   name: 'Borgo',
   tokens: [
     tokens['borgo-base'],
+    tokens['borgo-sieciarz'],
+    tokens['borgo-sieciarz'],
+    tokens['borgo-sieciarz'],
+    tokens['borgo-sieciarz'],
+    tokens['borgo-sieciarz'],
+    tokens['borgo-sieciarz'],
     tokens['borgo-sieciarz'],
     tokens['borgo-sieciarz'],
   ],
@@ -55,6 +65,14 @@ export const molochArmy: Army = {
   name: 'Moloch',
   tokens: [
     tokens['moloch-base'],
+    tokens['moloch-blocker'],
+    tokens['moloch-blocker'],
+    tokens['moloch-blocker'],
+    tokens['moloch-blocker'],
+    tokens['moloch-blocker'],
+    tokens['moloch-blocker'],
+    tokens['moloch-blocker'],
+    tokens['moloch-blocker'],
     tokens['moloch-blocker'],
     tokens['moloch-blocker'],
   ],

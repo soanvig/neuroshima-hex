@@ -3,8 +3,9 @@ import * as PIXI from 'pixi.js';
 import * as Honeycomb from 'honeycomb-grid';
 import { OutlineFilter } from '@pixi/filter-outline';
 import type { Board } from '../domain/Board';
-import { getTokenGraphics } from '../domain/tokens';
+import { getTokenGraphics, others } from '../domain/tokens';
 import type { Vector } from '../domain/Vector';
+import { throttle } from 'lodash';
 
 const outlineFilterBlue = new OutlineFilter(4, 0x99ff99);
 
@@ -19,8 +20,9 @@ export class PixiRenderer implements Renderer {
 
     this.boardContainer.x = this.app.screen.width / 2;
     this.boardContainer.y = this.app.screen.height / 2;
-    this.boardContainer.pivot.y = this.boardContainer.height / 2;
-    this.boardContainer.pivot.x = this.boardContainer.width / 2;
+    this.boardContainer.pivot.y = this.grid.pointWidth() / 2;
+    this.boardContainer.pivot.x = this.grid.pointHeight() / 2;
+
     this.app.stage.addChild(this.boardContainer);
   }
 
@@ -39,7 +41,6 @@ export class PixiRenderer implements Renderer {
       antialias: true,
       width: 800,
       height: 600,
-      backgroundColor: 0x1099bb,
       resolution: window.devicePixelRatio || 1,
     });
 
@@ -47,7 +48,7 @@ export class PixiRenderer implements Renderer {
   }
 
   render(board: Board) {
-    this.boardContainer.removeChildren();
+    // this.boardContainer.removeChildren();
 
     this.grid.forEach(hex => {
       const cube = hex.cube();
@@ -59,6 +60,15 @@ export class PixiRenderer implements Renderer {
       });
 
       if (!token) {
+        const mask = PIXI.Sprite.from(others.mask);
+        const maskOrigin = hex.toPoint();
+
+        mask.anchor.set(0.5);
+        mask.x = maskOrigin.x + this.grid.pointWidth() / 2;
+        mask.y = maskOrigin.y + this.grid.pointHeight() / 2;
+
+        this.boardContainer.addChild(mask);
+
         return;
       }
 
@@ -68,6 +78,7 @@ export class PixiRenderer implements Renderer {
       hexSprite.interactive = true;
       hexSprite.anchor.set(0.5);
 
+
       const hitPolygon = new PIXI.Polygon(...hex.corners().map(corner => {
         return new PIXI.Point(corner.x - hex.center().x, corner.y - hex.center().y);
       }));
@@ -75,12 +86,12 @@ export class PixiRenderer implements Renderer {
 
       // UNCOMMENT TO DEBUG HIT AREAS
       // const g = new PIXI.Graphics();
-      // g.beginFill(0x000)
-      // g.drawPolygon(hitPolygon)
+      // g.beginFill(0xF0F0F0);
+      // g.drawPolygon(hitPolygon);
       // hexSprite.addChild(g);
 
-      hexSprite.x = hexOrigin.x + hex.center().x;
-      hexSprite.y = hexOrigin.y + hex.center().y;
+      hexSprite.x = hexOrigin.x + this.grid.pointWidth() / 2;
+      hexSprite.y = hexOrigin.y + this.grid.pointHeight() / 2;
       hexSprite.rotation = this.mapDirectionToRotation(token.direction);
 
       hexSprite.addListener('click', e => {
@@ -94,6 +105,30 @@ export class PixiRenderer implements Renderer {
       hexSprite.addListener('mouseout', e => {
         hexSprite.filters = [];
       });
+
+      const onDown = () => {
+        hexSprite.addListener('mouseup', onUp);
+        hexSprite.addListener('mousemove', onMove);
+      };
+
+      const onMove = throttle((e: PIXI.InteractionEvent) => {
+        const x = e.data.global.x - hexSprite.x;
+        const y = e.data.global.y - hexSprite.y;
+
+        const angle = Math.atan2(y, x);
+        const roundTo = Math.PI / 3;
+        const rotation = Math.round((angle / roundTo) * 100) * roundTo / 100;
+
+        hexSprite.rotation = angle;
+      }, 100);
+
+      const onUp = () => {
+        hexSprite.removeListener('mouseup', onUp);
+        hexSprite.removeListener('mousemove', onMove);
+      };
+
+      hexSprite.addListener('mousedown', onDown);
+
 
       this.boardContainer.addChild(hexSprite);
     });

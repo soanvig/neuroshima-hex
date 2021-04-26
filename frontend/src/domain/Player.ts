@@ -15,8 +15,6 @@ export interface PlayerAttrs {
 }
 
 export class Player {
-  private MAX_HAND_SIZE = 3;
-
   public id: string;
   public points: number = 0;
   private hand: PlayerToken[];
