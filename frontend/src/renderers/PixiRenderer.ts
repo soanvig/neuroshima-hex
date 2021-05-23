@@ -6,6 +6,7 @@ import type { Board } from '../domain/Board';
 import { getTokenGraphics, others } from '../domain/tokens';
 import type { Vector } from '../domain/Vector';
 import { throttle } from 'lodash';
+import { game } from '../application/game';
 
 const outlineFilterBlue = new OutlineFilter(4, 0x99ff99);
 
@@ -107,24 +108,32 @@ export class PixiRenderer implements Renderer {
       });
 
       const onDown = () => {
-        hexSprite.addListener('mouseup', onUp);
+        document.addEventListener('mouseup', onUp);
         hexSprite.addListener('mousemove', onMove);
       };
 
       const onMove = throttle((e: PIXI.InteractionEvent) => {
-        const x = e.data.global.x - hexSprite.x;
-        const y = e.data.global.y - hexSprite.y;
+        const local = e.data.getLocalPosition(this.boardContainer);
+        const x = local.x - hexSprite.x;
+        const y = local.y - hexSprite.y;
 
         const angle = Math.atan2(y, x);
         const roundTo = Math.PI / 3;
-        const rotation = Math.round((angle / roundTo) * 100) * roundTo / 100;
+        const rotation = Math.round(angle / roundTo) * roundTo;
 
-        hexSprite.rotation = angle;
-      }, 100);
+        hexSprite.rotation = rotation;
+      }, 25);
 
       const onUp = () => {
-        hexSprite.removeListener('mouseup', onUp);
+        document.removeEventListener('mouseup', onUp);
         hexSprite.removeListener('mousemove', onMove);
+
+        const realDirection = Math.floor(hexSprite.rotation / Math.PI * 3);
+
+        const direction = realDirection < 0 ? 6 - realDirection : realDirection;
+
+        // @TODO Use real token id, not the general one
+        // game.rotateToken(token.id, direction);
       };
 
       hexSprite.addListener('mousedown', onDown);
@@ -138,18 +147,7 @@ export class PixiRenderer implements Renderer {
     element.appendChild(this.app.view);
   }
 
-  private mapDirectionToRotation(dir: Vector): number {
-    const directionMap: Record<string, number> = {
-      '0,-1,1': 0,
-      '0,1,-1': 180,
-
-      '-1,0,1': 60,
-      '1,0,-1': 240,
-
-      '-1,1,0': 120,
-      '1,-1,0': 300,
-    };
-
-    return directionMap[`${ dir.x },${ dir.y },${ dir.z }`] * Math.PI / 180;
+  private mapDirectionToRotation(direction: number): number {
+    return direction * 60 * Math.PI / 180;
   }
 }

@@ -21,8 +21,5 @@ export const areVectorsEqual = (v1: Vector, v2: Vector): boolean => (
     && v1.z === v2.z
 );
 
-export const getNeutralDirection = () => ({ x: 0, y: -1, z: 1 });
-export const getRandomDirection = () => sample(
-  generatePossibleVectors(-1, 1)
-    .filter(pos => !areVectorsEqual(pos, { x: 0, y: 0, z: 0 })),
-)!;
+export const getNeutralDirection = () => 0;
+export const getRandomDirection = () => sample(range(0, 6 + 1))!;

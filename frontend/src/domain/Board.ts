@@ -15,7 +15,7 @@ export interface BaseToken {
 // Ingame token
 export interface Token {
   id: string;
-  direction: Vector;
+  direction: number;
 }
 
 type Attrs = { size: number, tiles: Tile[] };
@@ -55,7 +55,7 @@ export class Board {
     };
   }
 
-  public rotateToken(pos: Vector, direction: Vector) {
+  public rotateToken(pos: Vector, direction: number) {
     const index = this.tiles.findIndex(tile => areVectorsEqual(tile.pos, pos));
     const tile = this.tiles[index];
 

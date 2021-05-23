@@ -3,6 +3,7 @@ import { auth } from './auth';
 import { map } from 'rxjs/operators';
 import { asyncTap } from '../rxjs-utils';
 import { stateManager } from './stateManager';
+import type { Token } from '../domain/Board';
 
 const getGameId = (): string => {
   const queryParams = new URLSearchParams(window.location.search);
@@ -53,6 +54,14 @@ export const game = {
 
     state.rotateRandomToken();
     stateManager.update(state);
+  },
+  rotateToken: (id: string, rotation: number) => {
+    const state = stateManager.getState();
+
+    // @TODO update state here
+
+    // state.rotateToken(id, rotation);
+    // stateManager.update(state);
   },
   getGameId,
 };

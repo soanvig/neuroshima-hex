@@ -1,4 +1,4 @@
-import { getNeutralDirection, Vector } from './Vector';
+import type { Vector } from './Vector';
 import type { BaseToken } from './Board';
 import { getTokenById } from './tokens';
 import { v4 } from 'uuid';
@@ -43,7 +43,7 @@ export class PlayerToken {
       v4(),
       token,
       0,
-      getNeutralDirection(),
+      { x: 0, y: 0, z: 0 },
       false,
     );
   }
