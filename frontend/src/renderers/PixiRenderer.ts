@@ -49,7 +49,7 @@ export class PixiRenderer implements Renderer {
   }
 
   render(board: Board) {
-    // this.boardContainer.removeChildren();
+    this.boardContainer.removeChildren();
 
     this.grid.forEach(hex => {
       const cube = hex.cube();
